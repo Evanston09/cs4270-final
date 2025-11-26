@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="me.evankim.cs4270final.ScoresheetController"
+            prefWidth="800" prefHeight="900">
+
+    <!-- Header Section -->
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 15;">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label text="FLL - UNEARTHED - Robot Game Scoresheet"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="scanButton" text="Scan" onAction="#openWebcamScanner"
+                        style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+            </HBox>
+
+            <HBox spacing="15">
+                <VBox spacing="5">
+                    <Label text="Team #:"/>
+                    <TextField fx:id="teamNumberField" prefWidth="100"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="Match:"/>
+                    <TextField fx:id="matchField" prefWidth="100"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="Referee:"/>
+                    <TextField fx:id="refereeField" prefWidth="150"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="Table:"/>
+                    <TextField fx:id="tableField" prefWidth="100"/>
+                </VBox>
+                <VBox spacing="5">
+                    <Label text="Team Initials:"/>
+                    <TextField fx:id="teamInitialsField" prefWidth="150"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Scrollable Mission Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: white;">
+            <VBox spacing="10" style="-fx-padding: 15;">
+
+                <!-- Equipment Inspection -->
+                <VBox spacing="5" style="-fx-border-color: #e74c3c; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="EQUIPMENT INSPECTION" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="equipmentInspectionCheck"/>
+                        <Label text="Robot and equipment fit in launch area, under 12 in. height"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="20" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 01: Surface Brushing -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 01 - SURFACE BRUSHING" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Soil deposits cleared:"/>
+                        <TextField fx:id="mission01SoilDeposits" prefWidth="60" promptText="0"/>
+                        <Label text="× 10 ="/>
+                        <Label fx:id="mission01SoilScore" text="0" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission01BrushCheck"/>
+                        <Label text="Archaeologist's brush not touching dig site"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="10" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission01Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 02: Map Reveal -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 02 - MAP REVEAL" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Topsoil sections cleared:"/>
+                        <TextField fx:id="mission02TopsoilSections" prefWidth="60" promptText="0"/>
+                        <Label text="× 10 ="/>
+                        <Label fx:id="mission02Score" text="0" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission02Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 03: Mineshaft Explorer -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 03 - MINESHAFT EXPLORER" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission03YourMinecart"/>
+                        <Label text="Your minecart on opposing field"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="30" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission03OpposingMinecart"/>
+                        <Label text="Bonus: Opposing minecart on your field"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="10 ADDED" style="-fx-font-weight: bold; -fx-text-fill: red;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission03Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 04: Careful Recovery -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 04 - CAREFUL RECOVERY" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission04PreciousArtifact"/>
+                        <Label text="Precious artifact not touching mine"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="30" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission04SupportStructures"/>
+                        <Label text="Both support structures standing"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="10" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission04Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 05: Who Lived Here? -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 05 - WHO LIVED HERE?" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission05StructureFloor"/>
+                        <Label text="Structure floor completely upright"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="30" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission05Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 06: Forge -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 06 - FORGE" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Ore blocks not touching forge:"/>
+                        <TextField fx:id="mission06OreBlocks" prefWidth="60" promptText="0"/>
+                        <Label text="× 10 ="/>
+                        <Label fx:id="mission06Score" text="0" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission06Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 07: Heavy Lifting -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 07 - HEAVY LIFTING" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission07Millstone"/>
+                        <Label text="Millstone no longer touching base"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="30" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission07Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 08: Silo -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 08 - SILO" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Preserved pieces outside silo:"/>
+                        <TextField fx:id="mission08PreservedPieces" prefWidth="60" promptText="0"/>
+                        <Label text="× 10 ="/>
+                        <Label fx:id="mission08Score" text="0" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission08Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 09: What's On Sale? -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 09 - WHAT'S ON SALE?" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission09Roof"/>
+                        <Label text="Roof completely raised"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="20" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission09MarketWares"/>
+                        <Label text="Market wares raised"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="10" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission09Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 10: Tip the Scales -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 10 - TIP THE SCALES" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission10ScaleTipped"/>
+                        <Label text="Scale tipped and touching mat"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="20" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission10PanRemoved"/>
+                        <Label text="Scale pan completely removed"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="10" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission10Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 11: Angler Artifacts -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 11 - ANGLER ARTIFACTS" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission11ArtifactsRaised"/>
+                        <Label text="Artifacts raised above ground layer"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="20" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission11CraneFlag"/>
+                        <Label text="Bonus: Crane flag at least partly lowered"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="10 ADDED" style="-fx-font-weight: bold; -fx-text-fill: red;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission11Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 12: Salvage Operation -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 12 - SALVAGE OPERATION" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission12SandCleared"/>
+                        <Label text="Sand completely cleared"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="20" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission12ShipRaised"/>
+                        <Label text="Ship completely raised"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="10" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission12Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 13: Statue Rebuild -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 13 - STATUE REBUILD" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <CheckBox fx:id="mission13StatueRaised"/>
+                        <Label text="Statue completely raised"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="30" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission13Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 14: Forum -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 14 - FORUM" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <Label text="Artifacts: Brush, Topsoil, Precious Artifact, Opposing Team's Minecart, Ore with Fossilized Artifact, Millstone, Scale Pan"
+                           style="-fx-font-size: 10px; -fx-font-style: italic;" wrapText="true"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Artifacts in forum (max 7):"/>
+                        <TextField fx:id="mission14Artifacts" prefWidth="60" promptText="0"/>
+                        <Label text="× 5 ="/>
+                        <Label fx:id="mission14Score" text="0" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission14Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Mission 15: Site Marking -->
+                <VBox spacing="5" style="-fx-border-color: #c0392b; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="MISSION 15 - SITE MARKING" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Sites with flags:"/>
+                        <TextField fx:id="mission15Sites" prefWidth="60" promptText="0"/>
+                        <Label text="× 10 ="/>
+                        <Label fx:id="mission15Score" text="0" style="-fx-font-weight: bold;"/>
+                    </HBox>
+                    <Separator/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label text="Mission Total: " style="-fx-font-weight: bold;"/>
+                        <Label fx:id="mission15Total" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Precision Tokens -->
+                <VBox spacing="5" style="-fx-border-color: #8e44ad; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="PRECISION TOKENS" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Tokens remaining:"/>
+                        <ComboBox fx:id="precisionTokensCombo" prefWidth="80"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="precisionTokensScore" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    </HBox>
+                    <Label text="0: 0 pts | 1: 10 pts | 2: 15 pts | 3: 25 pts | 4: 35 pts | 5-6: 50 pts"
+                           style="-fx-font-size: 10px; -fx-font-style: italic;"/>
+                </VBox>
+
+                <!-- Gracious Professionalism -->
+                <VBox spacing="5" style="-fx-border-color: #e67e22; -fx-border-width: 2; -fx-padding: 10; -fx-background-color: white;">
+                    <Label text="GRACIOUS PROFESSIONALISM" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <HBox spacing="20" alignment="CENTER_LEFT">
+                        <RadioButton fx:id="gpDeveloping" text="Developing (2 pts)"/>
+                        <RadioButton fx:id="gpAccomplished" text="Accomplished (3 pts)" selected="true"/>
+                        <RadioButton fx:id="gpExceeds" text="Exceeds (4 pts)"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- Final Score Section -->
+    <bottom>
+        <VBox style="-fx-background-color: #2c3e50; -fx-padding: 15;" spacing="10">
+            <HBox alignment="CENTER" spacing="20">
+                <Label text="FINAL SCORE:" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Label fx:id="finalScoreLabel" text="0"
+                       style="-fx-text-fill: #f39c12; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+    </bottom>
+
+</BorderPane>
