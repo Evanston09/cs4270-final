@@ -446,7 +446,7 @@ public class ScoresheetController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ScoresheetController.class.getResource("scan-view.fxml"));
             Stage stage = new Stage();
-            Scene scene = new Scene(fxmlLoader.load(), 900, 800);
+            Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
             stage.setTitle("Scan Sheet");
             stage.setScene(scene);
             stage.show();

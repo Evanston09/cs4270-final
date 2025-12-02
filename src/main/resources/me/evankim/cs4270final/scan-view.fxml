@@ -3,9 +3,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefWidth="1280.0" prefHeight="720" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane prefWidth="1920.0" prefHeight="1080.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="me.evankim.cs4270final.ScanController">
     <center>
-        <ImageView fx:id="videoView" preserveRatio="true"/>
+        <ImageView fx:id="videoView" fitWidth="1920.0" fitHeight="1080.0" preserveRatio="true"/>
     </center>
 </BorderPane>
