@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import me.evankim.cs4270final.model.*;
 import me.evankim.cs4270final.model.missions.*;
+import me.evankim.cs4270final.omr.ScoresheetProcessor;
 
 import java.io.IOException;
 
@@ -436,20 +437,168 @@ public class ScoresheetController {
         updateFinalScore();
     }
 
+    private void updateMission02Score() {
+        mission02Total.setText(String.valueOf(scoresheet.getMission02().calculateScore()));
+        mission02Score.setText(String.valueOf(scoresheet.getMission02().getTopsoilSectionsCleared() * 10));
+    }
+
+    private void updateMission05Score() {
+        mission05Total.setText(String.valueOf(scoresheet.getMission05().calculateScore()));
+    }
+
+    private void updateMission06Score() {
+        mission06Total.setText(String.valueOf(scoresheet.getMission06().calculateScore()));
+        mission06Score.setText(String.valueOf(scoresheet.getMission06().getOreBlocksNotTouchingForge() * 10));
+    }
+
+    private void updateMission07Score() {
+        mission07Total.setText(String.valueOf(scoresheet.getMission07().calculateScore()));
+    }
+
+    private void updateMission08Score() {
+        mission08Total.setText(String.valueOf(scoresheet.getMission08().calculateScore()));
+        mission08Score.setText(String.valueOf(scoresheet.getMission08().getPreservedPiecesOutsideSilo() * 10));
+    }
+
+    private void updateMission13Score() {
+        mission13Total.setText(String.valueOf(scoresheet.getMission13().calculateScore()));
+    }
+
+    private void updateMission14Score() {
+        mission14Total.setText(String.valueOf(scoresheet.getMission14().calculateScore()));
+        mission14Score.setText(String.valueOf(scoresheet.getMission14().getArtifactsInForum() * 5));
+    }
+
+    private void updateMission15Score() {
+        mission15Total.setText(String.valueOf(scoresheet.getMission15().calculateScore()));
+        mission15Score.setText(String.valueOf(scoresheet.getMission15().getSitesWithFlags() * 10));
+    }
+
+    private void updatePrecisionTokensScore() {
+        precisionTokensScore.setText(String.valueOf(scoresheet.getPrecisionTokens().calculateScore()));
+    }
+
     private void updateFinalScore() {
         finalScoreLabel.setText(String.valueOf(scoresheet.calculateTotalScore()));
     }
 
+    private void applyScannedResults(Scoresheet scannedScoresheet) {
+        scoresheet = scannedScoresheet;
+
+        equipmentInspectionCheck.setSelected(scoresheet.getEquipmentInspection().isPassed());
+
+        mission01SoilDeposits.setText(String.valueOf(scoresheet.getMission01().getSoilDepositsCleared()));
+        mission01BrushCheck.setSelected(scoresheet.getMission01().isBrushNotTouchingDigSite());
+
+        mission02TopsoilSections.setText(String.valueOf(scoresheet.getMission02().getTopsoilSectionsCleared()));
+
+        mission03YourMinecart.setSelected(scoresheet.getMission03().isYourMinecartOnOpposingField());
+        mission03OpposingMinecart.setSelected(scoresheet.getMission03().isOpposingMinecartOnYourField());
+
+        mission04PreciousArtifact.setSelected(scoresheet.getMission04().isPreciousArtifactNotTouchingMine());
+        mission04SupportStructures.setSelected(scoresheet.getMission04().isBothSupportStructuresStanding());
+
+        mission05StructureFloor.setSelected(scoresheet.getMission05().isStructureFloorCompletelyUpright());
+
+        mission06OreBlocks.setText(String.valueOf(scoresheet.getMission06().getOreBlocksNotTouchingForge()));
+
+        mission07Millstone.setSelected(scoresheet.getMission07().isMillstoneNotTouchingBase());
+
+        mission08PreservedPieces.setText(String.valueOf(scoresheet.getMission08().getPreservedPiecesOutsideSilo()));
+
+        mission09Roof.setSelected(scoresheet.getMission09().isRoofCompletelyRaised());
+        mission09MarketWares.setSelected(scoresheet.getMission09().isMarketWaresRaised());
+
+        mission10ScaleTipped.setSelected(scoresheet.getMission10().isScaleTippedAndTouchingMat());
+        mission10PanRemoved.setSelected(scoresheet.getMission10().isScalePanCompletelyRemoved());
+
+        mission11ArtifactsRaised.setSelected(scoresheet.getMission11().isArtifactsRaisedAboveGroundLayer());
+        mission11CraneFlag.setSelected(scoresheet.getMission11().isCraneFlagAtLeastPartlyLowered());
+
+        mission12SandCleared.setSelected(scoresheet.getMission12().isSandCompletelyCleared());
+        mission12ShipRaised.setSelected(scoresheet.getMission12().isShipCompletelyRaised());
+
+        mission13StatueRaised.setSelected(scoresheet.getMission13().isStatueCompletelyRaised());
+
+        mission14Artifacts.setText(String.valueOf(scoresheet.getMission14().getArtifactsInForum()));
+
+        mission15Sites.setText(String.valueOf(scoresheet.getMission15().getSitesWithFlags()));
+
+        precisionTokensCombo.setValue(String.valueOf(scoresheet.getPrecisionTokens().getTokensRemaining()));
+
+        GraciousProfessionalism.Level gpLevel = scoresheet.getGraciousProfessionalism().getLevel();
+        switch (gpLevel) {
+            case DEVELOPING -> gpDeveloping.setSelected(true);
+            case ACCOMPLISHED -> gpAccomplished.setSelected(true);
+            case EXCEEDS -> gpExceeds.setSelected(true);
+        }
+
+        updateAllMissionScores();
+        updateFinalScore();
+    }
+
+    private void updateAllMissionScores() {
+        updateMission01Score();
+        updateMission02Score();
+        updateMission03Score();
+        updateMission04Score();
+        updateMission05Score();
+        updateMission06Score();
+        updateMission07Score();
+        updateMission08Score();
+        updateMission09Score();
+        updateMission10Score();
+        updateMission11Score();
+        updateMission12Score();
+        updateMission13Score();
+        updateMission14Score();
+        updateMission15Score();
+        updatePrecisionTokensScore();
+    }
+
     @FXML
     protected void openWebcamScanner() {
-
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ScoresheetController.class.getResource("scan-view.fxml"));
-            Stage stage = new Stage();
-            Scene scene = new Scene(fxmlLoader.load(), 1920, 1080);
-            stage.setTitle("Scan Sheet");
-            stage.setScene(scene);
-            stage.show();
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                ScoresheetController.class.getResource("scan-view.fxml"));
+            Parent root = fxmlLoader.load();
+            ScanController scanController = fxmlLoader.getController();
+
+            Stage scanStage = new Stage();
+            ScoresheetProcessor processor = new ScoresheetProcessor(
+                new ScoresheetProcessor.ProcessorCallback() {
+                    @Override
+                    public void onProcessingComplete(Scoresheet scannedScoresheet) {
+                        System.out.println("Scanning complete!");
+                        applyScannedResults(scannedScoresheet);
+                        scanStage.close();
+                    }
+
+                    @Override
+                    public void onProcessingError(String errorMessage) {
+                        System.err.println("Scanning error: " + errorMessage);
+                    }
+
+                    @Override
+                    public void onPageScanned(int pageNumber) {
+                        System.out.println("Page " + pageNumber + " scanned successfully!");
+                        scanController.showPageScannedNotification(pageNumber);
+                    }
+                }
+            );
+
+            scanStage.setTitle("Scan Sheet");
+            Scene scene = new Scene(root, 1920, 1080);
+            scanStage.setScene(scene);
+
+            scanController.setProcessorAndStage(processor, scanStage);
+
+            scanStage.setOnCloseRequest(event -> {
+                scanController.shutdown();
+                processor.release();
+            });
+
+            scanStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

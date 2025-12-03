@@ -4,7 +4,10 @@ package me.evankim.cs4270final;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.image.*;
+import javafx.stage.Stage;
+import me.evankim.cs4270final.omr.ScoresheetProcessor;
 import org.bytedeco.javacpp.indexer.FloatIndexer;
 import org.bytedeco.javacpp.indexer.IntIndexer;
 import org.bytedeco.javacv.Frame;
@@ -36,31 +39,48 @@ public class ScanController {
     @FXML
     ImageView videoView;
 
-    Mat javaCVMat = new Mat();
+    @FXML
+    Label statusLabel;
 
-    Dictionary dict = getPredefinedDictionary(DICT_4X4_50);
+   private Mat javaCVMat = new Mat();
 
-    DetectorParameters detectorParams = new DetectorParameters();
-    RefineParameters refineParams = new RefineParameters();
+    private Dictionary dict = getPredefinedDictionary(DICT_4X4_50);
 
-    ArucoDetector arucoDetector = new ArucoDetector(dict, detectorParams, refineParams);
+    private DetectorParameters detectorParams = new DetectorParameters();
+    private RefineParameters refineParams = new RefineParameters();
+    private ArucoDetector arucoDetector = new ArucoDetector(dict, detectorParams, refineParams);
 
     /**
      * create buffer only once saves much time!
      */
-    WritablePixelFormat<ByteBuffer> formatByte = PixelFormat.getByteBgraPreInstance();
+    private final WritablePixelFormat<ByteBuffer> formatByte = PixelFormat.getByteBgraPreInstance();
 
-    OpenCVFrameConverter<Mat> javaCVConv = new OpenCVFrameConverter.ToMat();
+    private final OpenCVFrameConverter<Mat> javaCVConv = new OpenCVFrameConverter.ToMat();
 
     /**
      * controls if application closes
      */
-    SimpleBooleanProperty cameraActiveProperty = new SimpleBooleanProperty(true);
+    private final SimpleBooleanProperty cameraActiveProperty = new SimpleBooleanProperty(true);
 
     // Camera index: 0=internal, 4=first USB camera
     OpenCVFrameGrabber frameGrabber = new OpenCVFrameGrabber(4);
 
     ByteBuffer buffer;
+
+    // Used in making sure image is stable before processing
+    private final int HISTORY_SIZE = 5; // Track last 5 frames
+    private List<HashMap<Integer, Point2f>> positionHistory = new ArrayList<>();
+    private int stableFrameCount = 0;
+    private static final int REQUIRED_STABLE_FRAMES = 3;
+    private static final float STABILITY_THRESHOLD = 5.0f; // pixels
+
+    // Processor and stage for transferring captured frames
+    private ScoresheetProcessor processor;
+    private Stage scannerStage;
+
+    // Page scan tracking
+    private boolean page1Scanned = false;
+    private boolean page2Scanned = false;
 
     protected void updateView(Frame frame) {
         Mat mat = javaCVConv.convert(frame);
@@ -141,11 +161,6 @@ public class ScanController {
         Point2f bl = markerMap.get(sortedIds.get(2));  // 3rd lowest ID = bottom-left
         Point2f br = markerMap.get(sortedIds.get(3));  // 4th lowest ID = bottom-right
 
-        System.out.println("Marker IDs used: TL=" + sortedIds.get(0) +
-                         " TR=" + sortedIds.get(1) +
-                         " BL=" + sortedIds.get(2) +
-                         " BR=" + sortedIds.get(3));
-
         Mat srcMat = new Mat(4, 1, CV_32FC2);
         FloatIndexer srcIdx = srcMat.createIndexer();
         srcIdx.put(0, 0, 0, tl.x());
@@ -158,6 +173,7 @@ public class ScanController {
         srcIdx.put(3, 0, 1, bl.y());
         srcIdx.release();
 
+        // Around the size of paper
         int width = 1700;
         int height = 2200;
 
@@ -181,7 +197,52 @@ public class ScanController {
         Mat warped = new Mat();
         warpPerspective(mat, warped, H, new Size(width, height));
 
+        if (isFrameStable(markerMap)) {
+            stableFrameCount++;
+            if (stableFrameCount >= REQUIRED_STABLE_FRAMES) {
+                transferToProcessor(warped, markerMap);
+                stableFrameCount = 0;
+            }
+        } else {
+            stableFrameCount = 0;
+        }
+
         return warped;
+    }
+
+    private boolean isFrameStable(HashMap<Integer, Point2f> currentPositions) {
+        positionHistory.add(currentPositions);
+        if (positionHistory.size() > HISTORY_SIZE) {
+            positionHistory.removeFirst();
+        }
+
+        if (positionHistory.size() < 2) return false;
+
+        HashMap<Integer, Point2f> prevPositions = positionHistory.get(positionHistory.size() - 2);
+        float maxMovement = 0;
+
+        for (Integer key : currentPositions.keySet()) {
+            if (!prevPositions.containsKey(key)) return false;
+
+            Point2f curr = currentPositions.get(key);
+            Point2f prev = prevPositions.get(key);
+
+            float dx = curr.x() - prev.x();
+            float dy = curr.y() - prev.y();
+            float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+            maxMovement = Math.max(maxMovement, distance);
+        }
+
+        return maxMovement < STABILITY_THRESHOLD;
+    }
+
+    private void transferToProcessor(Mat warpedMat, HashMap<Integer, Point2f> markerMap) {
+        int[] markerIds = markerMap.keySet().stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
+
+        processor.processPage(warpedMat, markerIds);
     }
 
     public void setCameraActive(Boolean isActive) {
@@ -192,11 +253,46 @@ public class ScanController {
         return cameraActiveProperty.get();
     }
 
-    public void shutdown() {
-        setCameraActive(false);
+    public void setProcessorAndStage(ScoresheetProcessor processor, Stage stage) {
+        this.processor = processor;
+        this.scannerStage = stage;
     }
 
-    void setVideoView(Frame mat) {
+    public void showPageScannedNotification(int pageNumber) {
+        Platform.runLater(() -> {
+            if (pageNumber == 1) {
+                page1Scanned = true;
+            } else if (pageNumber == 2) {
+                page2Scanned = true;
+            }
+            updateStatusLabel();
+        });
+    }
+
+    private void updateStatusLabel() {
+        String status = "";
+        if (page1Scanned && page2Scanned) {
+            status = "BOTH PAGES SCANNED - Processing Complete!";
+        } else if (page1Scanned) {
+            status = "PAGE 1 SCANNED - Please scan Page 2";
+        } else if (page2Scanned) {
+            status = "PAGE 2 SCANNED - Please scan Page 1";
+        }
+
+        if (!status.isEmpty()) {
+            statusLabel.setText(status);
+            statusLabel.setVisible(true);
+        }
+    }
+
+    public void shutdown() {
+        setCameraActive(false);
+        if (javaCVMat != null) {
+            javaCVMat.release();
+        }
+    }
+
+    private void setVideoView(Frame mat) {
         updateView(mat);
     }
 
