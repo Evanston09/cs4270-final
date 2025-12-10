@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission03MineshaftExplorer implements Mission {
+public class Mission03MineshaftExplorer extends Mission {
     private boolean yourMinecartOnOpposingField; // 30 points
     private boolean opposingMinecartOnYourField; // 10 points bonus
 

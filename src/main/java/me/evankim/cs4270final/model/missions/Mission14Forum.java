@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission14Forum implements Mission {
+public class Mission14Forum extends Mission {
     // Artifacts: Brush, Topsoil, Precious Artifact, Opposing Team's Minecart,
     // Ore with Fossilized Artifact, Millstone, & Scale Pan
     private int artifactsInForum; // 5 points each

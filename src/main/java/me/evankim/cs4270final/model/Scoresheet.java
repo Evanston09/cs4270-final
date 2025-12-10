@@ -3,13 +3,6 @@ package me.evankim.cs4270final.model;
 import me.evankim.cs4270final.model.missions.*;
 
 public class Scoresheet {
-    // Header information
-    private String teamNumber;
-    private String match;
-    private String referee;
-    private String table;
-    private String teamInitials;
-
     // Scoring components using polymorphism
     private EquipmentInspection equipmentInspection;
     private Mission[] missions; // Array of all 15 missions
@@ -17,13 +10,6 @@ public class Scoresheet {
     private GraciousProfessionalism graciousProfessionalism;
 
     public Scoresheet() {
-        // Initialize header fields
-        this.teamNumber = "";
-        this.match = "";
-        this.referee = "";
-        this.table = "";
-        this.teamInitials = "";
-
         // Initialize scoring components
         this.equipmentInspection = new EquipmentInspection();
 
@@ -47,47 +33,6 @@ public class Scoresheet {
 
         this.precisionTokens = new PrecisionTokens();
         this.graciousProfessionalism = new GraciousProfessionalism();
-    }
-
-    // Header getters and setters
-    public String getTeamNumber() {
-        return teamNumber;
-    }
-
-    public void setTeamNumber(String teamNumber) {
-        this.teamNumber = teamNumber;
-    }
-
-    public String getMatch() {
-        return match;
-    }
-
-    public void setMatch(String match) {
-        this.match = match;
-    }
-
-    public String getReferee() {
-        return referee;
-    }
-
-    public void setReferee(String referee) {
-        this.referee = referee;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public String getTeamInitials() {
-        return teamInitials;
-    }
-
-    public void setTeamInitials(String teamInitials) {
-        this.teamInitials = teamInitials;
     }
 
     // Component getters

@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission02MapReveal implements Mission {
+public class Mission02MapReveal extends Mission {
     private int topsoilSectionsCleared; // 10 points each
 
     public Mission02MapReveal() {

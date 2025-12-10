@@ -1,6 +1,6 @@
 package me.evankim.cs4270final.model;
 
-public class PrecisionTokens {
+public class PrecisionTokens extends ScoringComponent {
     private int tokensRemaining;
 
     public PrecisionTokens() {
@@ -18,6 +18,7 @@ public class PrecisionTokens {
         this.tokensRemaining = tokensRemaining;
     }
 
+    @Override
     public int calculateScore() {
         return switch (tokensRemaining) {
             case 0 -> 0;
@@ -29,4 +30,5 @@ public class PrecisionTokens {
             default -> 0;
         };
     }
+
 }

@@ -2,9 +2,9 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission01SurfaceBrushing implements Mission {
-    private int soilDepositsCleared; // 10 points each
-    private boolean brushNotTouchingDigSite; // 10 points
+public class Mission01SurfaceBrushing extends Mission {
+    private int soilDepositsCleared;
+    private boolean brushNotTouchingDigSite;
 
     public Mission01SurfaceBrushing() {
         this.soilDepositsCleared = 0;

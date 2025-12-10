@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission05WhoLivedHere implements Mission {
+public class Mission05WhoLivedHere extends Mission {
     private boolean structureFloorCompletelyUpright; // 30 points
 
     public Mission05WhoLivedHere() {

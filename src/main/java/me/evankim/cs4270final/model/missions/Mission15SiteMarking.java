@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission15SiteMarking implements Mission {
+public class Mission15SiteMarking extends Mission {
     private int sitesWithFlags; // 10 points each
 
     public Mission15SiteMarking() {

@@ -7,12 +7,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class FLLRefBotApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("scoresheet-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(FLLRefBotApplication.class.getResource("scoresheet-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 800);
-        stage.setTitle("FLL Challenge 2025-26: UNEARTHED - Scoresheet");
+        stage.setTitle("CS4270 Final: FLL RefBot");
         stage.setScene(scene);
         stage.show();
     }

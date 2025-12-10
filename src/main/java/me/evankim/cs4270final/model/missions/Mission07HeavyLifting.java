@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission07HeavyLifting implements Mission {
+public class Mission07HeavyLifting extends Mission {
     private boolean millstoneNotTouchingBase; // 30 points
 
     public Mission07HeavyLifting() {

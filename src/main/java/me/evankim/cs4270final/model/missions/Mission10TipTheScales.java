@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission10TipTheScales implements Mission {
+public class Mission10TipTheScales extends Mission {
     private boolean scaleTippedAndTouchingMat; // 20 points
     private boolean scalePanCompletelyRemoved; // 10 points
 

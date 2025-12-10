@@ -181,15 +181,8 @@ public class BubbleFieldTemplate {
         fields.put("GP", gp);
     }
 
-    public int getPageNumber() {
-        return pageNumber;
-    }
 
     public Map<String, List<Bubble>> getFields() {
         return fields;
-    }
-
-    public List<Bubble> getField(String fieldId) {
-        return fields.get(fieldId);
     }
 }

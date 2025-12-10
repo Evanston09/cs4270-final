@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission12SalvageOperation implements Mission {
+public class Mission12SalvageOperation extends Mission {
     private boolean sandCompletelyCleared; // 20 points
     private boolean shipCompletelyRaised; // 10 points
 

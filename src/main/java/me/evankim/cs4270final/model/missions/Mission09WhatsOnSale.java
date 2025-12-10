@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission09WhatsOnSale implements Mission {
+public class Mission09WhatsOnSale extends Mission {
     private boolean roofCompletelyRaised; // 20 points
     private boolean marketWaresRaised; // 10 points
 

@@ -19,7 +19,5 @@ public class Bubble {
         return new Point(x, y);
     }
 
-    public double getPercentX() { return percentX; }
-    public double getPercentY() { return percentY; }
     public String getValue() { return value; }
 }

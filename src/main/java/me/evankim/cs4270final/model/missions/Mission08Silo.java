@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission08Silo implements Mission {
+public class Mission08Silo extends Mission {
     private int preservedPiecesOutsideSilo; // 10 points each
 
     public Mission08Silo() {

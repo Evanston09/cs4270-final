@@ -1,6 +1,6 @@
 package me.evankim.cs4270final.model;
 
-public class GraciousProfessionalism {
+public class GraciousProfessionalism extends ScoringComponent {
     public enum Level {
         DEVELOPING(2),
         ACCOMPLISHED(3),
@@ -31,7 +31,9 @@ public class GraciousProfessionalism {
         this.level = level;
     }
 
+    @Override
     public int calculateScore() {
         return level.getPoints();
     }
+
 }

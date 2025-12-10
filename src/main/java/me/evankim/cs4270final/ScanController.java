@@ -265,6 +265,11 @@ public class ScanController {
                 page2Scanned = true;
             }
             updateStatusLabel();
+
+            // Shut down camera when both pages are scanned
+            if (page1Scanned && page2Scanned) {
+                shutdown();
+            }
         });
     }
 

@@ -98,18 +98,6 @@ public class ScoresheetProcessor {
         }
     }
 
-    public Mat getCapturedPage1() {
-        return capturedPage1;
-    }
-
-    public Mat getCapturedPage2() {
-        return capturedPage2;
-    }
-
-    public Scoresheet getScoresheet() {
-        return scoresheet;
-    }
-
     private void detectBubbles(Mat capturedImage, int pageNumber) {
         BubbleFieldTemplate template = new BubbleFieldTemplate(pageNumber);
         Map<String, List<Bubble>> fields = template.getFields();

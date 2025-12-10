@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission11AnglerArtifacts implements Mission {
+public class Mission11AnglerArtifacts extends Mission {
     private boolean artifactsRaisedAboveGroundLayer; // 20 points
     private boolean craneFlagAtLeastPartlyLowered; // 10 points bonus
 

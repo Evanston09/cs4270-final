@@ -1,6 +1,6 @@
 package me.evankim.cs4270final.model;
 
-public class EquipmentInspection {
+public class EquipmentInspection extends ScoringComponent {
     private boolean passed;
 
     public EquipmentInspection() {
@@ -15,7 +15,9 @@ public class EquipmentInspection {
         this.passed = passed;
     }
 
+    @Override
     public int calculateScore() {
         return passed ? 20 : 0;
     }
+
 }

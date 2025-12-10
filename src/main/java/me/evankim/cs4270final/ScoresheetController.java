@@ -7,20 +7,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import me.evankim.cs4270final.model.*;
-import me.evankim.cs4270final.model.missions.*;
 import me.evankim.cs4270final.omr.ScoresheetProcessor;
 
 import java.io.IOException;
 
 public class ScoresheetController {
-
-    // Header fields
-    @FXML private TextField teamNumberField;
-    @FXML private TextField matchField;
-    @FXML private TextField refereeField;
-    @FXML private TextField tableField;
-    @FXML private TextField teamInitialsField;
-    @FXML private Button scanButton;
 
     // Equipment Inspection
     @FXML private CheckBox equipmentInspectionCheck;
@@ -129,7 +120,6 @@ public class ScoresheetController {
         precisionTokensCombo.setValue("6");
 
         // Set up all listeners
-        setupHeaderListeners();
         setupEquipmentInspectionListeners();
         setupMission01Listeners();
         setupMission02Listeners();
@@ -150,15 +140,7 @@ public class ScoresheetController {
         setupGraciousProfessionalismListeners();
 
         // Initial calculation
-        updateAllScores();
-    }
-
-    private void setupHeaderListeners() {
-        teamNumberField.textProperty().addListener((obs, old, newVal) -> scoresheet.setTeamNumber(newVal));
-        matchField.textProperty().addListener((obs, old, newVal) -> scoresheet.setMatch(newVal));
-        refereeField.textProperty().addListener((obs, old, newVal) -> scoresheet.setReferee(newVal));
-        tableField.textProperty().addListener((obs, old, newVal) -> scoresheet.setTable(newVal));
-        teamInitialsField.textProperty().addListener((obs, old, newVal) -> scoresheet.setTeamInitials(newVal));
+        setupAllScores();
     }
 
     private void setupEquipmentInspectionListeners() {
@@ -416,7 +398,7 @@ public class ScoresheetController {
         });
     }
 
-    private void updateAllScores() {
+    private void setupAllScores() {
         // Initialize all score displays
         mission01Total.setText("0");
         mission02Total.setText("0");
@@ -560,31 +542,31 @@ public class ScoresheetController {
     protected void openWebcamScanner() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                ScoresheetController.class.getResource("scan-view.fxml"));
+                    ScoresheetController.class.getResource("scan-view.fxml"));
             Parent root = fxmlLoader.load();
             ScanController scanController = fxmlLoader.getController();
 
             Stage scanStage = new Stage();
             ScoresheetProcessor processor = new ScoresheetProcessor(
-                new ScoresheetProcessor.ProcessorCallback() {
-                    @Override
-                    public void onProcessingComplete(Scoresheet scannedScoresheet) {
-                        System.out.println("Scanning complete!");
-                        applyScannedResults(scannedScoresheet);
-                        scanStage.close();
-                    }
+                    new ScoresheetProcessor.ProcessorCallback() {
+                        @Override
+                        public void onProcessingComplete(Scoresheet scannedScoresheet) {
+                            System.out.println("Scanning complete!");
+                            applyScannedResults(scannedScoresheet);
+                            scanStage.close();
+                        }
 
-                    @Override
-                    public void onProcessingError(String errorMessage) {
-                        System.err.println("Scanning error: " + errorMessage);
-                    }
+                        @Override
+                        public void onProcessingError(String errorMessage) {
+                            System.err.println("Scanning error: " + errorMessage);
+                        }
 
-                    @Override
-                    public void onPageScanned(int pageNumber) {
-                        System.out.println("Page " + pageNumber + " scanned successfully!");
-                        scanController.showPageScannedNotification(pageNumber);
+                        @Override
+                        public void onPageScanned(int pageNumber) {
+                            System.out.println("Page " + pageNumber + " scanned successfully!");
+                            scanController.showPageScannedNotification(pageNumber);
+                        }
                     }
-                }
             );
 
             scanStage.setTitle("Scan Sheet");

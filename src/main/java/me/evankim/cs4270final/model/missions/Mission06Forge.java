@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission06Forge implements Mission {
+public class Mission06Forge extends Mission {
     private int oreBlocksNotTouchingForge; // 10 points each
 
     public Mission06Forge() {

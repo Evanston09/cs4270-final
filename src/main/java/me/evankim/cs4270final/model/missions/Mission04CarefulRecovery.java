@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission04CarefulRecovery implements Mission {
+public class Mission04CarefulRecovery extends Mission {
     private boolean preciousArtifactNotTouchingMine; // 30 points
     private boolean bothSupportStructuresStanding; // 10 points
 

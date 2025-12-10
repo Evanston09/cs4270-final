@@ -2,7 +2,7 @@ package me.evankim.cs4270final.model.missions;
 
 import me.evankim.cs4270final.model.Mission;
 
-public class Mission13StatueRebuild implements Mission {
+public class Mission13StatueRebuild extends Mission {
     private boolean statueCompletelyRaised; // 30 points
 
     public Mission13StatueRebuild() {
