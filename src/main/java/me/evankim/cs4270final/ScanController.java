@@ -244,19 +244,42 @@ public class ScanController {
         processor.processPage(warpedMat, markerIds);
     }
 
+    /**
+     * Sets whether the camera is actively capturing frames.
+     *
+     * @param isActive true to enable camera capture, false to disable
+     */
     public void setCameraActive(Boolean isActive) {
         cameraActiveProperty.set(isActive);
     }
 
+    /**
+     * Gets whether the camera is actively capturing frames.
+     *
+     * @return true if camera is active, false otherwise
+     */
     public Boolean getCameraActive() {
         return cameraActiveProperty.get();
     }
 
+    /**
+     * Sets the processor and stage for this scanner.
+     * Must be called before starting the scanner.
+     *
+     * @param processor the scoresheet processor to handle detection
+     * @param stage the scanner window stage
+     */
     public void setProcessorAndStage(ScoresheetProcessor processor, Stage stage) {
         this.processor = processor;
         this.scannerStage = stage;
     }
 
+    /**
+     * Shows a notification that a page has been scanned and processed.
+     * Automatically shuts down the scanner when both pages have been scanned.
+     *
+     * @param pageNumber the page that was scanned (1 or 2)
+     */
     public void showPageScannedNotification(int pageNumber) {
         Platform.runLater(() -> {
             if (pageNumber == 1) {
@@ -289,6 +312,10 @@ public class ScanController {
         }
     }
 
+    /**
+     * Shuts down the camera and releases native resources.
+     * Must be called before closing the scanner window.
+     */
     public void shutdown() {
         setCameraActive(false);
         if (javaCVMat != null) {
@@ -296,10 +323,19 @@ public class ScanController {
         }
     }
 
-    private void setVideoView(Frame mat) {
-        updateView(mat);
+    /**
+     * Sets the video view by updating it with the given frame.
+     *
+     * @param frame the captured video frame
+     */
+    protected void setVideoView(Frame frame) {
+        updateView(frame);
     }
 
+    /**
+     * Initializes the controller after the FXML file has been loaded.
+     * Sets up the camera frame grabber and starts the capture thread.
+     */
     @FXML
     public void initialize() {
         try {

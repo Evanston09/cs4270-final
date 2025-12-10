@@ -14,6 +14,11 @@ import static org.bytedeco.opencv.global.opencv_imgproc.circle;
 import static org.bytedeco.opencv.global.opencv_imgproc.putText;
 import static org.bytedeco.opencv.global.opencv_imgproc.FONT_HERSHEY_SIMPLEX;
 
+/**
+ * Processes captured scoresheet images to extract and score FRC Robotics matches.
+ * Handles two-page scoresheet processing with bubble detection and field mapping.
+ * Uses callbacks to communicate processing status and results.
+ */
 public class ScoresheetProcessor {
 
     private Mat capturedPage1;
@@ -23,12 +28,39 @@ public class ScoresheetProcessor {
     private BubbleDetector bubbleDetector;
     private FieldMapper fieldMapper;
 
+    /**
+     * Callback interface for processing events.
+     * Allows clients to respond to processing completion, errors, and page scans.
+     */
     public interface ProcessorCallback {
+        /**
+         * Called when processing is complete and the scoresheet is fully scored.
+         *
+         * @param scoresheet the completed scoresheet with all scores
+         */
         void onProcessingComplete(Scoresheet scoresheet);
+
+        /**
+         * Called when an error occurs during processing.
+         *
+         * @param errorMessage description of the error
+         */
         void onProcessingError(String errorMessage);
+
+        /**
+         * Called when a page has been successfully scanned and processed.
+         *
+         * @param pageNumber the page number that was scanned (1 or 2)
+         */
         void onPageScanned(int pageNumber);
     }
 
+    /**
+     * Creates a new ScoresheetProcessor with the given callback.
+     * Initializes the scoresheet, bubble detector, and field mapper.
+     *
+     * @param callback the callback to receive processing events
+     */
     public ScoresheetProcessor(ProcessorCallback callback) {
         this.callback = callback;
         this.scoresheet = new Scoresheet();
@@ -36,6 +68,13 @@ public class ScoresheetProcessor {
         this.fieldMapper = new FieldMapper();
     }
 
+    /**
+     * Processes a warped scoresheet page image.
+     * Detects bubbles, maps fields to scores, and notifies when processing is complete.
+     *
+     * @param warpedMat the warped page image matrix
+     * @param detectedMarkerIds the ArUco marker IDs detected on the page
+     */
     public void processPage(Mat warpedMat, int[] detectedMarkerIds) {
         boolean isPage1 = containsPage1Markers(detectedMarkerIds);
         boolean isPage2 = containsPage2Markers(detectedMarkerIds);
@@ -148,6 +187,9 @@ public class ScoresheetProcessor {
         debugImage.release();
     }
 
+    /**
+     * Releases native resources held by captured page matrices.
+     */
     public void release() {
         if (capturedPage1 != null) {
             capturedPage1.release();

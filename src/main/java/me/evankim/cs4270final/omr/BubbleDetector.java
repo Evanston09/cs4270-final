@@ -7,12 +7,29 @@ import static org.bytedeco.opencv.global.opencv_core.mean;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvtColor;
 import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2GRAY;
 
+/**
+ * Detects which bubble is filled in a set of bubbles using image analysis.
+ * Uses dynamic thresholding based on page intensity to identify darkened bubbles.
+ */
 public class BubbleDetector {
 
+    /**
+     * Size of the region of interest (ROI) around each bubble center in pixels.
+     */
     public static final int ROI_SIZE = 30;
 
+    /**
+     * Threshold ratio for dynamic thresholding relative to page average intensity.
+     */
     public static final double THRESHOLD_RATIO = 0.75;
 
+    /**
+     * Detects which bubble is filled by finding the one with lowest intensity.
+     *
+     * @param capturedImage the scoresheet page image
+     * @param bubbles list of bubble locations to check
+     * @return the value of the filled bubble, or null if none are filled
+     */
     public String detectFilledBubble(Mat capturedImage, List<Bubble> bubbles) {
         String detectedValue = null;
         double darkestIntensity = Double.MAX_VALUE;

@@ -6,7 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import me.evankim.cs4270final.model.*;
+import javafx.util.converter.NumberStringConverter;
+import me.evankim.cs4270final.model.GraciousProfessionalism;
+import me.evankim.cs4270final.model.Scoresheet;
+import me.evankim.cs4270final.model.missions.Mission01SurfaceBrushing;
 import me.evankim.cs4270final.omr.ScoresheetProcessor;
 
 import java.io.IOException;
@@ -90,7 +93,7 @@ public class ScoresheetController {
     @FXML private Label mission15Total;
 
     // Precision Tokens
-    @FXML private ComboBox<String> precisionTokensCombo;
+    @FXML private ComboBox<Integer> precisionTokensCombo;
     @FXML private Label precisionTokensScore;
 
     // Gracious Professionalism
@@ -105,6 +108,10 @@ public class ScoresheetController {
     private Scoresheet scoresheet;
     private ToggleGroup gpToggleGroup;
 
+    /**
+     * Initializes the controller after the FXML file has been loaded.
+     * Sets up the model, toggle groups, precision tokens combo, and binds all UI controls to the model.
+     */
     @FXML
     public void initialize() {
         scoresheet = new Scoresheet();
@@ -116,428 +123,273 @@ public class ScoresheetController {
         gpExceeds.setToggleGroup(gpToggleGroup);
 
         // Initialize precision tokens combo
-        precisionTokensCombo.getItems().addAll("0", "1", "2", "3", "4", "5", "6");
-        precisionTokensCombo.setValue("6");
+        precisionTokensCombo.getItems().addAll(0, 1, 2, 3, 4, 5, 6);
 
-        // Set up all listeners
-        setupEquipmentInspectionListeners();
-        setupMission01Listeners();
-        setupMission02Listeners();
-        setupMission03Listeners();
-        setupMission04Listeners();
-        setupMission05Listeners();
-        setupMission06Listeners();
-        setupMission07Listeners();
-        setupMission08Listeners();
-        setupMission09Listeners();
-        setupMission10Listeners();
-        setupMission11Listeners();
-        setupMission12Listeners();
-        setupMission13Listeners();
-        setupMission14Listeners();
-        setupMission15Listeners();
-        setupPrecisionTokensListeners();
-        setupGraciousProfessionalismListeners();
-
-        // Initial calculation
-        setupAllScores();
+        bindControlsToModel();
     }
 
-    private void setupEquipmentInspectionListeners() {
-        equipmentInspectionCheck.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getEquipmentInspection().setPassed(newVal);
-            updateFinalScore();
-        });
+    private void bindControlsToModel() {
+        // Equipment Inspection
+        equipmentInspectionCheck.selectedProperty().bindBidirectional(scoresheet.getEquipmentInspection().passedProperty());
+
+        // Missions
+        bindMission01();
+        bindMission02();
+        bindMission03();
+        bindMission04();
+        bindMission05();
+        bindMission06();
+        bindMission07();
+        bindMission08();
+        bindMission09();
+        bindMission10();
+        bindMission11();
+        bindMission12();
+        bindMission13();
+        bindMission14();
+        bindMission15();
+
+        // Precision Tokens
+        precisionTokensCombo.valueProperty().bindBidirectional(scoresheet.getPrecisionTokens().tokensRemainingProperty().asObject());
+        precisionTokensScore.textProperty().bind(scoresheet.getPrecisionTokens().scoreProperty().asString());
+
+        // Gracious Professionalism
+        bindGraciousProfessionalism();
+
+
+        // Final Score
+        finalScoreLabel.textProperty().bind(scoresheet.totalScoreProperty().asString());
     }
 
-    private void setupMission01Listeners() {
-        mission01SoilDeposits.textProperty().addListener((obs, old, newVal) -> {
-            try {
-                int count = newVal.isEmpty() ? 0 : Integer.parseInt(newVal);
-                scoresheet.getMission01().setSoilDepositsCleared(count);
-                mission01SoilScore.setText(String.valueOf(count * 10));
-                updateMission01Score();
-            } catch (NumberFormatException e) {
-                mission01SoilScore.setText("0");
-            }
-        });
-
-        mission01BrushCheck.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission01().setBrushNotTouchingDigSite(newVal);
-            updateMission01Score();
-        });
+    private void bindMission01() {
+        Mission01SurfaceBrushing m = scoresheet.getMission01();
+        mission01SoilDeposits.textProperty().bindBidirectional(m.soilDepositsClearedProperty(), new NumberStringConverter());
+        mission01BrushCheck.selectedProperty().bindBidirectional(m.brushNotTouchingDigSiteProperty());
+        mission01SoilScore.textProperty().bind(m.soilDepositsClearedProperty().multiply(10).asString());
+        mission01Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void updateMission01Score() {
-        mission01Total.setText(String.valueOf(scoresheet.getMission01().calculateScore()));
-        updateFinalScore();
+    private void bindMission02() {
+        var m = scoresheet.getMission02();
+        mission02TopsoilSections.textProperty().bindBidirectional(m.topsoilSectionsClearedProperty(), new NumberStringConverter());
+        mission02Score.textProperty().bind(m.topsoilSectionsClearedProperty().multiply(10).asString());
+        mission02Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission02Listeners() {
-        mission02TopsoilSections.textProperty().addListener((obs, old, newVal) -> {
-            try {
-                int count = newVal.isEmpty() ? 0 : Integer.parseInt(newVal);
-                scoresheet.getMission02().setTopsoilSectionsCleared(count);
-                mission02Score.setText(String.valueOf(count * 10));
-                mission02Total.setText(String.valueOf(scoresheet.getMission02().calculateScore()));
-                updateFinalScore();
-            } catch (NumberFormatException e) {
-                mission02Score.setText("0");
-                mission02Total.setText("0");
-            }
-        });
+    private void bindMission03() {
+        var m = scoresheet.getMission03();
+        mission03YourMinecart.selectedProperty().bindBidirectional(m.yourMinecartOnOpposingFieldProperty());
+        mission03OpposingMinecart.selectedProperty().bindBidirectional(m.opposingMinecartOnYourFieldProperty());
+        mission03Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission03Listeners() {
-        mission03YourMinecart.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission03().setYourMinecartOnOpposingField(newVal);
-            updateMission03Score();
-        });
-
-        mission03OpposingMinecart.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission03().setOpposingMinecartOnYourField(newVal);
-            updateMission03Score();
-        });
+    private void bindMission04() {
+        var m = scoresheet.getMission04();
+        mission04PreciousArtifact.selectedProperty().bindBidirectional(m.preciousArtifactNotTouchingMineProperty());
+        mission04SupportStructures.selectedProperty().bindBidirectional(m.bothSupportStructuresStandingProperty());
+        mission04Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void updateMission03Score() {
-        mission03Total.setText(String.valueOf(scoresheet.getMission03().calculateScore()));
-        updateFinalScore();
+    private void bindMission05() {
+        var m = scoresheet.getMission05();
+        mission05StructureFloor.selectedProperty().bindBidirectional(m.structureFloorCompletelyUprightProperty());
+        mission05Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission04Listeners() {
-        mission04PreciousArtifact.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission04().setPreciousArtifactNotTouchingMine(newVal);
-            updateMission04Score();
-        });
-
-        mission04SupportStructures.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission04().setBothSupportStructuresStanding(newVal);
-            updateMission04Score();
-        });
+    private void bindMission06() {
+        var m = scoresheet.getMission06();
+        mission06OreBlocks.textProperty().bindBidirectional(m.oreBlocksNotTouchingForgeProperty(), new NumberStringConverter());
+        mission06Score.textProperty().bind(m.oreBlocksNotTouchingForgeProperty().multiply(10).asString());
+        mission06Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void updateMission04Score() {
-        mission04Total.setText(String.valueOf(scoresheet.getMission04().calculateScore()));
-        updateFinalScore();
+    private void bindMission07() {
+        var m = scoresheet.getMission07();
+        mission07Millstone.selectedProperty().bindBidirectional(m.millstoneNotTouchingBaseProperty());
+        mission07Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission05Listeners() {
-        mission05StructureFloor.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission05().setStructureFloorCompletelyUpright(newVal);
-            mission05Total.setText(String.valueOf(scoresheet.getMission05().calculateScore()));
-            updateFinalScore();
-        });
+    private void bindMission08() {
+        var m = scoresheet.getMission08();
+        mission08PreservedPieces.textProperty().bindBidirectional(m.preservedPiecesOutsideSiloProperty(), new NumberStringConverter());
+        mission08Score.textProperty().bind(m.preservedPiecesOutsideSiloProperty().multiply(10).asString());
+        mission08Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission06Listeners() {
-        mission06OreBlocks.textProperty().addListener((obs, old, newVal) -> {
-            try {
-                int count = newVal.isEmpty() ? 0 : Integer.parseInt(newVal);
-                scoresheet.getMission06().setOreBlocksNotTouchingForge(count);
-                mission06Score.setText(String.valueOf(count * 10));
-                mission06Total.setText(String.valueOf(scoresheet.getMission06().calculateScore()));
-                updateFinalScore();
-            } catch (NumberFormatException e) {
-                mission06Score.setText("0");
-                mission06Total.setText("0");
-            }
-        });
+    private void bindMission09() {
+        var m = scoresheet.getMission09();
+        mission09Roof.selectedProperty().bindBidirectional(m.roofCompletelyRaisedProperty());
+        mission09MarketWares.selectedProperty().bindBidirectional(m.marketWaresRaisedProperty());
+        mission09Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission07Listeners() {
-        mission07Millstone.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission07().setMillstoneNotTouchingBase(newVal);
-            mission07Total.setText(String.valueOf(scoresheet.getMission07().calculateScore()));
-            updateFinalScore();
-        });
+    private void bindMission10() {
+        var m = scoresheet.getMission10();
+        mission10ScaleTipped.selectedProperty().bindBidirectional(m.scaleTippedAndTouchingMatProperty());
+        mission10PanRemoved.selectedProperty().bindBidirectional(m.scalePanCompletelyRemovedProperty());
+        mission10Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission08Listeners() {
-        mission08PreservedPieces.textProperty().addListener((obs, old, newVal) -> {
-            try {
-                int count = newVal.isEmpty() ? 0 : Integer.parseInt(newVal);
-                scoresheet.getMission08().setPreservedPiecesOutsideSilo(count);
-                mission08Score.setText(String.valueOf(count * 10));
-                mission08Total.setText(String.valueOf(scoresheet.getMission08().calculateScore()));
-                updateFinalScore();
-            } catch (NumberFormatException e) {
-                mission08Score.setText("0");
-                mission08Total.setText("0");
-            }
-        });
+    private void bindMission11() {
+        var m = scoresheet.getMission11();
+        mission11ArtifactsRaised.selectedProperty().bindBidirectional(m.artifactsRaisedAboveGroundLayerProperty());
+        mission11CraneFlag.selectedProperty().bindBidirectional(m.craneFlagAtLeastPartlyLoweredProperty());
+        mission11Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission09Listeners() {
-        mission09Roof.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission09().setRoofCompletelyRaised(newVal);
-            updateMission09Score();
-        });
-
-        mission09MarketWares.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission09().setMarketWaresRaised(newVal);
-            updateMission09Score();
-        });
+    private void bindMission12() {
+        var m = scoresheet.getMission12();
+        mission12SandCleared.selectedProperty().bindBidirectional(m.sandCompletelyClearedProperty());
+        mission12ShipRaised.selectedProperty().bindBidirectional(m.shipCompletelyRaisedProperty());
+        mission12Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void updateMission09Score() {
-        mission09Total.setText(String.valueOf(scoresheet.getMission09().calculateScore()));
-        updateFinalScore();
+    private void bindMission13() {
+        var m = scoresheet.getMission13();
+        mission13StatueRaised.selectedProperty().bindBidirectional(m.statueCompletelyRaisedProperty());
+        mission13Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission10Listeners() {
-        mission10ScaleTipped.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission10().setScaleTippedAndTouchingMat(newVal);
-            updateMission10Score();
-        });
-
-        mission10PanRemoved.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission10().setScalePanCompletelyRemoved(newVal);
-            updateMission10Score();
-        });
+    private void bindMission14() {
+        var m = scoresheet.getMission14();
+        mission14Artifacts.textProperty().bindBidirectional(m.artifactsInForumProperty(), new NumberStringConverter());
+        mission14Score.textProperty().bind(m.artifactsInForumProperty().multiply(5).asString());
+        mission14Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void updateMission10Score() {
-        mission10Total.setText(String.valueOf(scoresheet.getMission10().calculateScore()));
-        updateFinalScore();
+    private void bindMission15() {
+        var m = scoresheet.getMission15();
+        mission15Sites.textProperty().bindBidirectional(m.sitesWithFlagsProperty(), new NumberStringConverter());
+        mission15Score.textProperty().bind(m.sitesWithFlagsProperty().multiply(10).asString());
+        mission15Total.textProperty().bind(m.scoreProperty().asString());
     }
 
-    private void setupMission11Listeners() {
-        mission11ArtifactsRaised.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission11().setArtifactsRaisedAboveGroundLayer(newVal);
-            updateMission11Score();
-        });
+    private void bindGraciousProfessionalism() {
+        java.util.Map<Toggle, GraciousProfessionalism.Level> toggleToLevel = java.util.Map.of(
+            gpDeveloping, GraciousProfessionalism.Level.DEVELOPING,
+            gpAccomplished, GraciousProfessionalism.Level.ACCOMPLISHED,
+            gpExceeds, GraciousProfessionalism.Level.EXCEEDS
+        );
 
-        mission11CraneFlag.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission11().setCraneFlagAtLeastPartlyLowered(newVal);
-            updateMission11Score();
-        });
-    }
+        java.util.Map<GraciousProfessionalism.Level, RadioButton> levelToToggle = java.util.Map.of(
+            GraciousProfessionalism.Level.DEVELOPING, gpDeveloping,
+            GraciousProfessionalism.Level.ACCOMPLISHED, gpAccomplished,
+            GraciousProfessionalism.Level.EXCEEDS, gpExceeds
+        );
 
-    private void updateMission11Score() {
-        mission11Total.setText(String.valueOf(scoresheet.getMission11().calculateScore()));
-        updateFinalScore();
-    }
+        // UI -> Model
+        gpToggleGroup.selectedToggleProperty().addListener((obs, old, newVal) ->
+            java.util.Optional.ofNullable(toggleToLevel.get(newVal))
+                .ifPresent(level -> scoresheet.getGraciousProfessionalism().levelProperty().set(level))
+        );
 
-    private void setupMission12Listeners() {
-        mission12SandCleared.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission12().setSandCompletelyCleared(newVal);
-            updateMission12Score();
-        });
-
-        mission12ShipRaised.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission12().setShipCompletelyRaised(newVal);
-            updateMission12Score();
-        });
-    }
-
-    private void updateMission12Score() {
-        mission12Total.setText(String.valueOf(scoresheet.getMission12().calculateScore()));
-        updateFinalScore();
-    }
-
-    private void setupMission13Listeners() {
-        mission13StatueRaised.selectedProperty().addListener((obs, old, newVal) -> {
-            scoresheet.getMission13().setStatueCompletelyRaised(newVal);
-            mission13Total.setText(String.valueOf(scoresheet.getMission13().calculateScore()));
-            updateFinalScore();
-        });
-    }
-
-    private void setupMission14Listeners() {
-        mission14Artifacts.textProperty().addListener((obs, old, newVal) -> {
-            try {
-                int count = newVal.isEmpty() ? 0 : Integer.parseInt(newVal);
-                scoresheet.getMission14().setArtifactsInForum(count);
-                mission14Score.setText(String.valueOf(count * 5));
-                mission14Total.setText(String.valueOf(scoresheet.getMission14().calculateScore()));
-                updateFinalScore();
-            } catch (NumberFormatException e) {
-                mission14Score.setText("0");
-                mission14Total.setText("0");
-            }
-        });
-    }
-
-    private void setupMission15Listeners() {
-        mission15Sites.textProperty().addListener((obs, old, newVal) -> {
-            try {
-                int count = newVal.isEmpty() ? 0 : Integer.parseInt(newVal);
-                scoresheet.getMission15().setSitesWithFlags(count);
-                mission15Score.setText(String.valueOf(count * 10));
-                mission15Total.setText(String.valueOf(scoresheet.getMission15().calculateScore()));
-                updateFinalScore();
-            } catch (NumberFormatException e) {
-                mission15Score.setText("0");
-                mission15Total.setText("0");
-            }
-        });
-    }
-
-    private void setupPrecisionTokensListeners() {
-        precisionTokensCombo.valueProperty().addListener((obs, old, newVal) -> {
-            if (newVal != null && !newVal.isEmpty()) {
-                int tokens = Integer.parseInt(newVal);
-                scoresheet.getPrecisionTokens().setTokensRemaining(tokens);
-                precisionTokensScore.setText(String.valueOf(scoresheet.getPrecisionTokens().calculateScore()));
-                updateFinalScore();
-            }
-        });
-    }
-
-    private void setupGraciousProfessionalismListeners() {
-        gpToggleGroup.selectedToggleProperty().addListener((obs, old, newVal) -> {
-            if (newVal == gpDeveloping) {
-                scoresheet.getGraciousProfessionalism().setLevel(GraciousProfessionalism.Level.DEVELOPING);
-            } else if (newVal == gpAccomplished) {
-                scoresheet.getGraciousProfessionalism().setLevel(GraciousProfessionalism.Level.ACCOMPLISHED);
-            } else if (newVal == gpExceeds) {
-                scoresheet.getGraciousProfessionalism().setLevel(GraciousProfessionalism.Level.EXCEEDS);
-            }
-            updateFinalScore();
-        });
-    }
-
-    private void setupAllScores() {
-        // Initialize all score displays
-        mission01Total.setText("0");
-        mission02Total.setText("0");
-        mission03Total.setText("0");
-        mission04Total.setText("0");
-        mission05Total.setText("0");
-        mission06Total.setText("0");
-        mission07Total.setText("0");
-        mission08Total.setText("0");
-        mission09Total.setText("0");
-        mission10Total.setText("0");
-        mission11Total.setText("0");
-        mission12Total.setText("0");
-        mission13Total.setText("0");
-        mission14Total.setText("0");
-        mission15Total.setText("0");
-        precisionTokensScore.setText(String.valueOf(scoresheet.getPrecisionTokens().calculateScore()));
-        updateFinalScore();
-    }
-
-    private void updateMission02Score() {
-        mission02Total.setText(String.valueOf(scoresheet.getMission02().calculateScore()));
-        mission02Score.setText(String.valueOf(scoresheet.getMission02().getTopsoilSectionsCleared() * 10));
-    }
-
-    private void updateMission05Score() {
-        mission05Total.setText(String.valueOf(scoresheet.getMission05().calculateScore()));
-    }
-
-    private void updateMission06Score() {
-        mission06Total.setText(String.valueOf(scoresheet.getMission06().calculateScore()));
-        mission06Score.setText(String.valueOf(scoresheet.getMission06().getOreBlocksNotTouchingForge() * 10));
-    }
-
-    private void updateMission07Score() {
-        mission07Total.setText(String.valueOf(scoresheet.getMission07().calculateScore()));
-    }
-
-    private void updateMission08Score() {
-        mission08Total.setText(String.valueOf(scoresheet.getMission08().calculateScore()));
-        mission08Score.setText(String.valueOf(scoresheet.getMission08().getPreservedPiecesOutsideSilo() * 10));
-    }
-
-    private void updateMission13Score() {
-        mission13Total.setText(String.valueOf(scoresheet.getMission13().calculateScore()));
-    }
-
-    private void updateMission14Score() {
-        mission14Total.setText(String.valueOf(scoresheet.getMission14().calculateScore()));
-        mission14Score.setText(String.valueOf(scoresheet.getMission14().getArtifactsInForum() * 5));
-    }
-
-    private void updateMission15Score() {
-        mission15Total.setText(String.valueOf(scoresheet.getMission15().calculateScore()));
-        mission15Score.setText(String.valueOf(scoresheet.getMission15().getSitesWithFlags() * 10));
-    }
-
-    private void updatePrecisionTokensScore() {
-        precisionTokensScore.setText(String.valueOf(scoresheet.getPrecisionTokens().calculateScore()));
-    }
-
-    private void updateFinalScore() {
-        finalScoreLabel.setText(String.valueOf(scoresheet.calculateTotalScore()));
+        // Model -> UI
+        scoresheet.getGraciousProfessionalism().levelProperty().addListener((obs, old, newVal) ->
+            java.util.Optional.ofNullable(levelToToggle.get(newVal))
+                .ifPresent(rb -> rb.setSelected(true))
+        );
     }
 
     private void applyScannedResults(Scoresheet scannedScoresheet) {
-        scoresheet = scannedScoresheet;
+        // Update the model. The UI will update automatically due to bindings.
 
-        equipmentInspectionCheck.setSelected(scoresheet.getEquipmentInspection().isPassed());
+        // Equipment Inspection
+        copyProperty(scoresheet.getEquipmentInspection().passedProperty(),
+                    scannedScoresheet.getEquipmentInspection().passedProperty());
 
-        mission01SoilDeposits.setText(String.valueOf(scoresheet.getMission01().getSoilDepositsCleared()));
-        mission01BrushCheck.setSelected(scoresheet.getMission01().isBrushNotTouchingDigSite());
+        // Mission 01
+        copyProperty(scoresheet.getMission01().soilDepositsClearedProperty(),
+                    scannedScoresheet.getMission01().soilDepositsClearedProperty());
+        copyProperty(scoresheet.getMission01().brushNotTouchingDigSiteProperty(),
+                    scannedScoresheet.getMission01().brushNotTouchingDigSiteProperty());
 
-        mission02TopsoilSections.setText(String.valueOf(scoresheet.getMission02().getTopsoilSectionsCleared()));
+        // Mission 02
+        copyProperty(scoresheet.getMission02().topsoilSectionsClearedProperty(),
+                    scannedScoresheet.getMission02().topsoilSectionsClearedProperty());
 
-        mission03YourMinecart.setSelected(scoresheet.getMission03().isYourMinecartOnOpposingField());
-        mission03OpposingMinecart.setSelected(scoresheet.getMission03().isOpposingMinecartOnYourField());
+        // Mission 03
+        copyProperty(scoresheet.getMission03().yourMinecartOnOpposingFieldProperty(),
+                    scannedScoresheet.getMission03().yourMinecartOnOpposingFieldProperty());
+        copyProperty(scoresheet.getMission03().opposingMinecartOnYourFieldProperty(),
+                    scannedScoresheet.getMission03().opposingMinecartOnYourFieldProperty());
 
-        mission04PreciousArtifact.setSelected(scoresheet.getMission04().isPreciousArtifactNotTouchingMine());
-        mission04SupportStructures.setSelected(scoresheet.getMission04().isBothSupportStructuresStanding());
+        // Mission 04
+        copyProperty(scoresheet.getMission04().preciousArtifactNotTouchingMineProperty(),
+                    scannedScoresheet.getMission04().preciousArtifactNotTouchingMineProperty());
+        copyProperty(scoresheet.getMission04().bothSupportStructuresStandingProperty(),
+                    scannedScoresheet.getMission04().bothSupportStructuresStandingProperty());
 
-        mission05StructureFloor.setSelected(scoresheet.getMission05().isStructureFloorCompletelyUpright());
+        // Mission 05
+        copyProperty(scoresheet.getMission05().structureFloorCompletelyUprightProperty(),
+                    scannedScoresheet.getMission05().structureFloorCompletelyUprightProperty());
 
-        mission06OreBlocks.setText(String.valueOf(scoresheet.getMission06().getOreBlocksNotTouchingForge()));
+        // Mission 06
+        copyProperty(scoresheet.getMission06().oreBlocksNotTouchingForgeProperty(),
+                    scannedScoresheet.getMission06().oreBlocksNotTouchingForgeProperty());
 
-        mission07Millstone.setSelected(scoresheet.getMission07().isMillstoneNotTouchingBase());
+        // Mission 07
+        copyProperty(scoresheet.getMission07().millstoneNotTouchingBaseProperty(),
+                    scannedScoresheet.getMission07().millstoneNotTouchingBaseProperty());
 
-        mission08PreservedPieces.setText(String.valueOf(scoresheet.getMission08().getPreservedPiecesOutsideSilo()));
+        // Mission 08
+        copyProperty(scoresheet.getMission08().preservedPiecesOutsideSiloProperty(),
+                    scannedScoresheet.getMission08().preservedPiecesOutsideSiloProperty());
 
-        mission09Roof.setSelected(scoresheet.getMission09().isRoofCompletelyRaised());
-        mission09MarketWares.setSelected(scoresheet.getMission09().isMarketWaresRaised());
+        // Mission 09
+        copyProperty(scoresheet.getMission09().roofCompletelyRaisedProperty(),
+                    scannedScoresheet.getMission09().roofCompletelyRaisedProperty());
+        copyProperty(scoresheet.getMission09().marketWaresRaisedProperty(),
+                    scannedScoresheet.getMission09().marketWaresRaisedProperty());
 
-        mission10ScaleTipped.setSelected(scoresheet.getMission10().isScaleTippedAndTouchingMat());
-        mission10PanRemoved.setSelected(scoresheet.getMission10().isScalePanCompletelyRemoved());
+        // Mission 10
+        copyProperty(scoresheet.getMission10().scaleTippedAndTouchingMatProperty(),
+                    scannedScoresheet.getMission10().scaleTippedAndTouchingMatProperty());
+        copyProperty(scoresheet.getMission10().scalePanCompletelyRemovedProperty(),
+                    scannedScoresheet.getMission10().scalePanCompletelyRemovedProperty());
 
-        mission11ArtifactsRaised.setSelected(scoresheet.getMission11().isArtifactsRaisedAboveGroundLayer());
-        mission11CraneFlag.setSelected(scoresheet.getMission11().isCraneFlagAtLeastPartlyLowered());
+        // Mission 11
+        copyProperty(scoresheet.getMission11().artifactsRaisedAboveGroundLayerProperty(),
+                    scannedScoresheet.getMission11().artifactsRaisedAboveGroundLayerProperty());
+        copyProperty(scoresheet.getMission11().craneFlagAtLeastPartlyLoweredProperty(),
+                    scannedScoresheet.getMission11().craneFlagAtLeastPartlyLoweredProperty());
 
-        mission12SandCleared.setSelected(scoresheet.getMission12().isSandCompletelyCleared());
-        mission12ShipRaised.setSelected(scoresheet.getMission12().isShipCompletelyRaised());
+        // Mission 12
+        copyProperty(scoresheet.getMission12().sandCompletelyClearedProperty(),
+                    scannedScoresheet.getMission12().sandCompletelyClearedProperty());
+        copyProperty(scoresheet.getMission12().shipCompletelyRaisedProperty(),
+                    scannedScoresheet.getMission12().shipCompletelyRaisedProperty());
 
-        mission13StatueRaised.setSelected(scoresheet.getMission13().isStatueCompletelyRaised());
+        // Mission 13
+        copyProperty(scoresheet.getMission13().statueCompletelyRaisedProperty(),
+                    scannedScoresheet.getMission13().statueCompletelyRaisedProperty());
 
-        mission14Artifacts.setText(String.valueOf(scoresheet.getMission14().getArtifactsInForum()));
+        // Mission 14
+        copyProperty(scoresheet.getMission14().artifactsInForumProperty(),
+                    scannedScoresheet.getMission14().artifactsInForumProperty());
 
-        mission15Sites.setText(String.valueOf(scoresheet.getMission15().getSitesWithFlags()));
+        // Mission 15
+        copyProperty(scoresheet.getMission15().sitesWithFlagsProperty(),
+                    scannedScoresheet.getMission15().sitesWithFlagsProperty());
 
-        precisionTokensCombo.setValue(String.valueOf(scoresheet.getPrecisionTokens().getTokensRemaining()));
+        // Precision Tokens
+        copyProperty(scoresheet.getPrecisionTokens().tokensRemainingProperty(),
+                    scannedScoresheet.getPrecisionTokens().tokensRemainingProperty());
 
-        GraciousProfessionalism.Level gpLevel = scoresheet.getGraciousProfessionalism().getLevel();
-        switch (gpLevel) {
-            case DEVELOPING -> gpDeveloping.setSelected(true);
-            case ACCOMPLISHED -> gpAccomplished.setSelected(true);
-            case EXCEEDS -> gpExceeds.setSelected(true);
-        }
-
-        updateAllMissionScores();
-        updateFinalScore();
+        // Gracious Professionalism
+        copyProperty(scoresheet.getGraciousProfessionalism().levelProperty(),
+                    scannedScoresheet.getGraciousProfessionalism().levelProperty());
     }
 
-    private void updateAllMissionScores() {
-        updateMission01Score();
-        updateMission02Score();
-        updateMission03Score();
-        updateMission04Score();
-        updateMission05Score();
-        updateMission06Score();
-        updateMission07Score();
-        updateMission08Score();
-        updateMission09Score();
-        updateMission10Score();
-        updateMission11Score();
-        updateMission12Score();
-        updateMission13Score();
-        updateMission14Score();
-        updateMission15Score();
-        updatePrecisionTokensScore();
+    private <T> void copyProperty(javafx.beans.property.Property<T> target, javafx.beans.property.Property<T> source) {
+        target.setValue(source.getValue());
     }
 
+    /**
+     * Opens the webcam scanner window for capturing and processing FRC scoresheet images.
+     * Creates a new stage with the scan view and sets up the processor with callback handlers.
+     * Handles page detection, processing completion, and error states.
+     * The window closes automatically when both pages have been scanned.
+     */
     @FXML
     protected void openWebcamScanner() {
         try {

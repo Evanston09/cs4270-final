@@ -1,0 +1,8 @@
+--module-path
+/home/evank/.local/share/mise/installs/java/17.0.2/lib
+./src/main/java/me/evankim/cs4270final/omr/Bubble.java
+./src/main/java/me/evankim/cs4270final/omr/BubbleFieldTemplate.java
+./src/main/java/me/evankim/cs4270final/omr/DetectionResult.java
+./src/main/java/me/evankim/cs4270final/omr/BubbleDetector.java
+./src/main/java/me/evankim/cs4270final/omr/ScoresheetProcessor.java
+./src/main/java/me/evankim/cs4270final/omr/FieldMapper.java
