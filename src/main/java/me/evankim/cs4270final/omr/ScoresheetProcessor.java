@@ -42,13 +42,11 @@ public class ScoresheetProcessor {
 
         if (isPage1) {
             capturedPage1 = warpedMat.clone();
-            System.out.println("Page 1 captured successfully");
             detectBubbles(capturedPage1, 1);
             saveBubbleVisualization(capturedPage1, 1);
             notifyPageScanned(1);
         } else if (isPage2) {
             capturedPage2 = warpedMat.clone();
-            System.out.println("Page 2 captured successfully");
             detectBubbles(capturedPage2, 2);
             saveBubbleVisualization(capturedPage2, 2);
             notifyPageScanned(2);
@@ -115,8 +113,6 @@ public class ScoresheetProcessor {
     private void detectBubbles(Mat capturedImage, int pageNumber) {
         BubbleFieldTemplate template = new BubbleFieldTemplate(pageNumber);
         Map<String, List<Bubble>> fields = template.getFields();
-
-        System.out.println("Detecting bubbles on page " + pageNumber);
 
         for (Map.Entry<String, List<Bubble>> entry : fields.entrySet()) {
             String fieldId = entry.getKey();

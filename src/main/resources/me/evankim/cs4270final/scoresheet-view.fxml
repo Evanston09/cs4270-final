@@ -9,7 +9,6 @@
             fx:controller="me.evankim.cs4270final.ScoresheetController"
             prefWidth="800" prefHeight="900">
 
-    <!-- Header Section -->
     <top>
         <VBox spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 15;">
             <HBox spacing="20" alignment="CENTER_LEFT">

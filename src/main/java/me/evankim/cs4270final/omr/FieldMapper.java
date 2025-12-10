@@ -102,7 +102,7 @@ public class FieldMapper {
     }
 
     private boolean parseBoolean(String value) {
-        return "Y".equalsIgnoreCase(value);
+        return "Y".equals(value);
     }
 
     private int parseInt(String value) {
@@ -114,10 +114,7 @@ public class FieldMapper {
             case "2" -> GraciousProfessionalism.Level.DEVELOPING;
             case "3" -> GraciousProfessionalism.Level.ACCOMPLISHED;
             case "4" -> GraciousProfessionalism.Level.EXCEEDS;
-            default -> {
-                // Default to accomplished
-                yield GraciousProfessionalism.Level.ACCOMPLISHED;
-            }
+            default -> GraciousProfessionalism.Level.ACCOMPLISHED;
         };
     }
 }

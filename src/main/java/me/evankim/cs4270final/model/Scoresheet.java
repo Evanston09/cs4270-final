@@ -99,16 +99,10 @@ public class Scoresheet {
         return missions;
     }
 
-    /**
-     * Get a specific mission by number (1-15)
-     * @param missionNumber the mission number (1-15)
-     * @return the mission object
-     */
     public Mission getMission(int missionNumber) {
         return missions[missionNumber - 1];
     }
 
-    // Convenience methods for type-safe access to specific missions
     public Mission01SurfaceBrushing getMission01() {
         return (Mission01SurfaceBrushing) missions[0];
     }
@@ -181,30 +175,15 @@ public class Scoresheet {
     public int calculateTotalScore() {
         int total = 0;
 
-        // Equipment inspection
         total += equipmentInspection.calculateScore();
 
-        // All missions using polymorphism
         for (Mission mission : missions) {
             total += mission.calculateScore();
         }
 
-        // Precision tokens and GP
         total += precisionTokens.calculateScore();
         total += graciousProfessionalism.calculateScore();
 
-        return total;
-    }
-
-    /**
-     * Get the total mission score (excluding equipment, tokens, and GP)
-     * @return total points from all missions
-     */
-    public int calculateMissionsScore() {
-        int total = 0;
-        for (Mission mission : missions) {
-            total += mission.calculateScore();
-        }
         return total;
     }
 }
