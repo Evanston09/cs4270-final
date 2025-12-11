@@ -21,7 +21,7 @@ public class BubbleDetector {
     /**
      * Threshold ratio for dynamic thresholding relative to page average intensity.
      */
-    public static final double THRESHOLD_RATIO = 0.75;
+    public static final double THRESHOLD_RATIO = 0.85;
 
     /**
      * Detects which bubble is filled by finding the one with lowest intensity.

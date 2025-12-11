@@ -1,13 +1,13 @@
 package me.evankim.cs4270final.model;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Represents the precision tokens scoring component.
- * Tracks remaining precision tokens (0-6) and calculates score based on tokens available.
- * Scoring: 0 tokens = 0 pts, 1 = 10 pts, 2 = 15 pts, 3 = 25 pts, 4 = 35 pts, 5-6 = 50 pts
+ * Scoring: 0 tokens = 0 pts, 1 = 10 pts, 2 = 15 pts, 3 = 25 pts, 4 = 35 pts, 5 = 50 pts, 6 = 60 pts
  */
 public class PrecisionTokens extends ScoringComponent {
     private final IntegerProperty tokensRemaining;
@@ -18,15 +18,23 @@ public class PrecisionTokens extends ScoringComponent {
     public PrecisionTokens() {
         this.tokensRemaining = new SimpleIntegerProperty(6); // Start with max tokens
         this.score = new ReadOnlyIntegerWrapper(0);
-        this.score.bind(tokensRemaining.map(n -> switch (n.intValue()) {
+        this.score.bind(Bindings.createIntegerBinding(this::calculatePrecisionScore, tokensRemaining));
+    }
+
+    /**
+     * Calculates the score based on tokens remaining.
+     */
+    private int calculatePrecisionScore() {
+        return switch (tokensRemaining.get()) {
             case 0 -> 0;
             case 1 -> 10;
             case 2 -> 15;
             case 3 -> 25;
             case 4 -> 35;
-            case 5, 6 -> 50;
+            case 5 -> 50;
+            case 6 -> 60;
             default -> 0;
-        }));
+        };
     }
 
     /**

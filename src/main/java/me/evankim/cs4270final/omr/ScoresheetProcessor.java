@@ -15,7 +15,7 @@ import static org.bytedeco.opencv.global.opencv_imgproc.putText;
 import static org.bytedeco.opencv.global.opencv_imgproc.FONT_HERSHEY_SIMPLEX;
 
 /**
- * Processes captured scoresheet images to extract and score FRC Robotics matches.
+ * Processes captured scoresheet images to extract and score FLL Robotics matches.
  * Handles two-page scoresheet processing with bubble detection and field mapping.
  * Uses callbacks to communicate processing status and results.
  */
@@ -82,12 +82,14 @@ public class ScoresheetProcessor {
         if (isPage1) {
             capturedPage1 = warpedMat.clone();
             detectBubbles(capturedPage1, 1);
-            saveBubbleVisualization(capturedPage1, 1);
+            // For debbuging
+            // saveBubbleVisualization(capturedPage1, 1);
             notifyPageScanned(1);
         } else if (isPage2) {
             capturedPage2 = warpedMat.clone();
             detectBubbles(capturedPage2, 2);
-            saveBubbleVisualization(capturedPage2, 2);
+            // For debbuging
+            // saveBubbleVisualization(capturedPage2, 2);
             notifyPageScanned(2);
         } else {
             notifyError("Unable to determine page type from markers");

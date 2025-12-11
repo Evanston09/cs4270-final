@@ -62,7 +62,7 @@ public class ScanController {
     private final SimpleBooleanProperty cameraActiveProperty = new SimpleBooleanProperty(true);
 
     // Camera index: 0=internal, 4=first USB camera
-    OpenCVFrameGrabber frameGrabber = new OpenCVFrameGrabber(4);
+    OpenCVFrameGrabber frameGrabber = new OpenCVFrameGrabber(0);
 
     ByteBuffer buffer;
 
@@ -75,7 +75,6 @@ public class ScanController {
 
     // Processor and stage for transferring captured frames
     private ScoresheetProcessor processor;
-    private Stage scannerStage;
 
     // Page scan tracking
     private boolean page1Scanned = false;
@@ -95,18 +94,24 @@ public class ScanController {
             mat = tryWarpToRectangle(mat, corners, ids);
         }
 
-        opencv_imgproc.cvtColor(mat, javaCVMat, COLOR_BGR2BGRA);
+        // Release temporary Mats
+        corners.close();
+        ids.release();
 
-        int w = javaCVMat.cols();
-        int h = javaCVMat.rows();
+        if (mat != null && !mat.empty()) {
+            opencv_imgproc.cvtColor(mat, javaCVMat, COLOR_BGR2BGRA);
 
-        buffer = javaCVMat.createBuffer();
+            int w = javaCVMat.cols();
+            int h = javaCVMat.rows();
 
-        PixelBuffer<ByteBuffer> pb =
-                new PixelBuffer<>(w, h, buffer, formatByte);
+            buffer = javaCVMat.createBuffer();
 
-        WritableImage wi = new WritableImage(pb);
-        Platform.runLater(() -> videoView.setImage(wi));
+            PixelBuffer<ByteBuffer> pb =
+                    new PixelBuffer<>(w, h, buffer, formatByte);
+
+            WritableImage wi = new WritableImage(pb);
+            Platform.runLater(() -> videoView.setImage(wi));
+        }
     }
 
     private Mat tryWarpToRectangle(Mat mat, MatVector corners, Mat ids) {
@@ -199,7 +204,7 @@ public class ScanController {
         if (isFrameStable(markerMap)) {
             stableFrameCount++;
             if (stableFrameCount >= REQUIRED_STABLE_FRAMES) {
-                transferToProcessor(warped, markerMap);
+                transferToProcessor(warped.clone(), markerMap);
                 stableFrameCount = 0;
             }
         } else {
@@ -271,7 +276,6 @@ public class ScanController {
      */
     public void setProcessorAndStage(ScoresheetProcessor processor, Stage stage) {
         this.processor = processor;
-        this.scannerStage = stage;
     }
 
     /**

@@ -6,9 +6,8 @@ import javafx.beans.property.ReadOnlyIntegerWrapper;
 import me.evankim.cs4270final.model.missions.*;
 
 /**
- * Represents a complete FRC Robotics scoring sheet with all mission scores,
+ * Represents a complete FLL Robotics scoring sheet with all mission scores,
  * equipment inspection, precision tokens, and gracious professionalism ratings.
- *
  * The scoresheet automatically calculates the total score by binding all
  * component scores together. Uses the property pattern for JavaFX bindings.
  */

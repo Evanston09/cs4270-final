@@ -324,11 +324,11 @@
                     <Label text="PRECISION TOKENS" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <Label text="Tokens remaining:"/>
-                        <ComboBox fx:id="precisionTokensCombo" prefWidth="80"/>
+                        <TextField fx:id="precisionTokensInput" prefWidth="80" promptText="0-6"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label fx:id="precisionTokensScore" text="0" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
                     </HBox>
-                    <Label text="0: 0 pts | 1: 10 pts | 2: 15 pts | 3: 25 pts | 4: 35 pts | 5-6: 50 pts"
+                    <Label text="0: 0 pts | 1: 10 pts | 2: 15 pts | 3: 25 pts | 4: 35 pts | 5: 50 pts | 6: 60 pts"
                            style="-fx-font-size: 10px; -fx-font-style: italic;"/>
                 </VBox>
 

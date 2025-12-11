@@ -22,12 +22,10 @@ public class ScoresheetController {
     // Mission 01
     @FXML private TextField mission01SoilDeposits;
     @FXML private CheckBox mission01BrushCheck;
-    @FXML private Label mission01SoilScore;
     @FXML private Label mission01Total;
 
     // Mission 02
     @FXML private TextField mission02TopsoilSections;
-    @FXML private Label mission02Score;
     @FXML private Label mission02Total;
 
     // Mission 03
@@ -46,7 +44,6 @@ public class ScoresheetController {
 
     // Mission 06
     @FXML private TextField mission06OreBlocks;
-    @FXML private Label mission06Score;
     @FXML private Label mission06Total;
 
     // Mission 07
@@ -55,7 +52,6 @@ public class ScoresheetController {
 
     // Mission 08
     @FXML private TextField mission08PreservedPieces;
-    @FXML private Label mission08Score;
     @FXML private Label mission08Total;
 
     // Mission 09
@@ -84,16 +80,14 @@ public class ScoresheetController {
 
     // Mission 14
     @FXML private TextField mission14Artifacts;
-    @FXML private Label mission14Score;
     @FXML private Label mission14Total;
 
     // Mission 15
     @FXML private TextField mission15Sites;
-    @FXML private Label mission15Score;
     @FXML private Label mission15Total;
 
     // Precision Tokens
-    @FXML private ComboBox<Integer> precisionTokensCombo;
+    @FXML private TextField precisionTokensInput;
     @FXML private Label precisionTokensScore;
 
     // Gracious Professionalism
@@ -122,9 +116,6 @@ public class ScoresheetController {
         gpAccomplished.setToggleGroup(gpToggleGroup);
         gpExceeds.setToggleGroup(gpToggleGroup);
 
-        // Initialize precision tokens combo
-        precisionTokensCombo.getItems().addAll(0, 1, 2, 3, 4, 5, 6);
-
         bindControlsToModel();
     }
 
@@ -150,7 +141,7 @@ public class ScoresheetController {
         bindMission15();
 
         // Precision Tokens
-        precisionTokensCombo.valueProperty().bindBidirectional(scoresheet.getPrecisionTokens().tokensRemainingProperty().asObject());
+        precisionTokensInput.textProperty().bindBidirectional(scoresheet.getPrecisionTokens().tokensRemainingProperty(), new NumberStringConverter());
         precisionTokensScore.textProperty().bind(scoresheet.getPrecisionTokens().scoreProperty().asString());
 
         // Gracious Professionalism
@@ -165,14 +156,12 @@ public class ScoresheetController {
         Mission01SurfaceBrushing m = scoresheet.getMission01();
         mission01SoilDeposits.textProperty().bindBidirectional(m.soilDepositsClearedProperty(), new NumberStringConverter());
         mission01BrushCheck.selectedProperty().bindBidirectional(m.brushNotTouchingDigSiteProperty());
-        mission01SoilScore.textProperty().bind(m.soilDepositsClearedProperty().multiply(10).asString());
         mission01Total.textProperty().bind(m.scoreProperty().asString());
     }
 
     private void bindMission02() {
         var m = scoresheet.getMission02();
         mission02TopsoilSections.textProperty().bindBidirectional(m.topsoilSectionsClearedProperty(), new NumberStringConverter());
-        mission02Score.textProperty().bind(m.topsoilSectionsClearedProperty().multiply(10).asString());
         mission02Total.textProperty().bind(m.scoreProperty().asString());
     }
 
@@ -199,7 +188,6 @@ public class ScoresheetController {
     private void bindMission06() {
         var m = scoresheet.getMission06();
         mission06OreBlocks.textProperty().bindBidirectional(m.oreBlocksNotTouchingForgeProperty(), new NumberStringConverter());
-        mission06Score.textProperty().bind(m.oreBlocksNotTouchingForgeProperty().multiply(10).asString());
         mission06Total.textProperty().bind(m.scoreProperty().asString());
     }
 
@@ -212,7 +200,6 @@ public class ScoresheetController {
     private void bindMission08() {
         var m = scoresheet.getMission08();
         mission08PreservedPieces.textProperty().bindBidirectional(m.preservedPiecesOutsideSiloProperty(), new NumberStringConverter());
-        mission08Score.textProperty().bind(m.preservedPiecesOutsideSiloProperty().multiply(10).asString());
         mission08Total.textProperty().bind(m.scoreProperty().asString());
     }
 
@@ -253,14 +240,12 @@ public class ScoresheetController {
     private void bindMission14() {
         var m = scoresheet.getMission14();
         mission14Artifacts.textProperty().bindBidirectional(m.artifactsInForumProperty(), new NumberStringConverter());
-        mission14Score.textProperty().bind(m.artifactsInForumProperty().multiply(5).asString());
         mission14Total.textProperty().bind(m.scoreProperty().asString());
     }
 
     private void bindMission15() {
         var m = scoresheet.getMission15();
         mission15Sites.textProperty().bindBidirectional(m.sitesWithFlagsProperty(), new NumberStringConverter());
-        mission15Score.textProperty().bind(m.sitesWithFlagsProperty().multiply(10).asString());
         mission15Total.textProperty().bind(m.scoreProperty().asString());
     }
 
@@ -371,9 +356,9 @@ public class ScoresheetController {
         copyProperty(scoresheet.getMission15().sitesWithFlagsProperty(),
                     scannedScoresheet.getMission15().sitesWithFlagsProperty());
 
-        // Precision Tokens
-        copyProperty(scoresheet.getPrecisionTokens().tokensRemainingProperty(),
-                    scannedScoresheet.getPrecisionTokens().tokensRemainingProperty());
+        // Precision Tokens - use direct setter to ensure combo box updates
+        scoresheet.getPrecisionTokens().setTokensRemaining(
+                scannedScoresheet.getPrecisionTokens().getTokensRemaining());
 
         // Gracious Professionalism
         copyProperty(scoresheet.getGraciousProfessionalism().levelProperty(),
@@ -385,7 +370,7 @@ public class ScoresheetController {
     }
 
     /**
-     * Opens the webcam scanner window for capturing and processing FRC scoresheet images.
+     * Opens the webcam scanner window for capturing and processing FLL scoresheet images.
      * Creates a new stage with the scan view and sets up the processor with callback handlers.
      * Handles page detection, processing completion, and error states.
      * The window closes automatically when both pages have been scanned.

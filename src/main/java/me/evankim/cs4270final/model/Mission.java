@@ -4,7 +4,7 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 
 /**
- * Abstract base class representing an FRC Robotics mission.
+ * Abstract base class representing an FLL Robotics mission.
  * Each mission has specific completion criteria and scoring rules.
  * Extends ScoringComponent to provide score binding capabilities.
  */

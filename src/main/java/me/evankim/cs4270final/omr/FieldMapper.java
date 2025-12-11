@@ -102,12 +102,9 @@ public class FieldMapper {
         if (setter != null) {
             try {
                 setter.accept(scoresheet, value);
-                System.out.println("Applied: " + fieldId + " = " + value);
             } catch (Exception e) {
                 System.err.println("Error applying field " + fieldId + " with value " + value + ": " + e.getMessage());
             }
-        } else {
-            System.err.println("Warning: Unknown field ID: " + fieldId);
         }
     }
 
