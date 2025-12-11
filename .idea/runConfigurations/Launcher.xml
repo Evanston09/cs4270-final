@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Launcher" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="me.evankim.cs4270final.Launcher" />
+    <module name="cs4270-final" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

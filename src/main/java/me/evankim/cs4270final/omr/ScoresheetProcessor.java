@@ -83,13 +83,13 @@ public class ScoresheetProcessor {
             capturedPage1 = warpedMat.clone();
             detectBubbles(capturedPage1, 1);
             // For debbuging
-            // saveBubbleVisualization(capturedPage1, 1);
+            saveBubbleVisualization(capturedPage1, 1);
             notifyPageScanned(1);
         } else if (isPage2) {
             capturedPage2 = warpedMat.clone();
             detectBubbles(capturedPage2, 2);
             // For debbuging
-            // saveBubbleVisualization(capturedPage2, 2);
+             saveBubbleVisualization(capturedPage2, 2);
             notifyPageScanned(2);
         } else {
             notifyError("Unable to determine page type from markers");
